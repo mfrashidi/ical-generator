@@ -12,5 +12,6 @@ pip install -r requirements.txt
 ```
 ## How to use
 Execute the `cal.py` file and enter the required details. Then a **.ics** file generates in your *Desktop* folder. Open it with your calendar application to add the dates to the app.
+> If you want to use the Jalali calendar, add `-jalali` flag.
 ## License
 [GPL 3.0](https://choosealicense.com/licenses/gpl-3.0/)
