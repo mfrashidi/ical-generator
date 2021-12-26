@@ -1,5 +1,5 @@
 from icalendar import Calendar, Event
-import pytz,jdatetime,calendar,os
+import pytz,jdatetime,calendar,os,sys
 from datetime import datetime
 from PyInquirer import prompt, print_json
 from termcolor import colored
@@ -7,13 +7,21 @@ from examples import custom_style_2
 from pprint import pprint
 
 
-def convert(date):
-    a = jdatetime.datetime(date.year,date.month,date.day,date.hour,date.minute)
-    return datetime.utcfromtimestamp(calendar.timegm(a.utctimetuple()))
+def convert(date,jalaliCal=False):
+    if jalaliCal:
+        date = jdatetime.datetime(date.year,date.month,date.day,date.hour,date.minute)
+    else:
+        date = datetime(date.year,date.month,date.day,date.hour,date.minute)
+    return datetime.utcfromtimestamp(calendar.timegm(date.utctimetuple()))
+
+if '-jalali' in sys.argv:
+    jalaliCal = True
+else:
+    jalaliCal = False
 
 print(colored('iCal Generator','cyan') + colored('\n@mfrashidi','green'))
 classes = []
-dateV = lambda x: True if x.count('/')==2 and len(x.split('/')[0])==4 else 'Invalid Format'
+dateV = lambda x: True if (x.count('/')==2 or x.count('-')==2) and (len(x.split('/')[0])==4 or len(x.split('-')[0])==4) else 'Invalid Format'
 timeV = lambda x: True if x.count(':')==2 and x.count('-')==1 else 'Invalid Format'
 day = {'saturday':'SA','sunday':'SU','monday':'MO','tuesday':'TU','thursday':'TH','wednesday':'WE','friday':'FR'}
 
@@ -26,14 +34,13 @@ questions = [
     {
         'type': 'input',
         'name': 'first_class',
-        'default':'1400/7/1',
-        'message': 'When is your first class? (Ex. 1400/7/1)',
+        'message': 'When is your first class? ' + (f'(Ex. {jdatetime.datetime.now().strftime("%Y/%m/%d")})' if jalaliCal else f'(Ex. {datetime.now().strftime("%Y-%m-%d")})'),
         'validate': dateV
     },
     {
         'type': 'input',
         'name': 'last_class',
-        'message': 'When does the class end? (Ex. 1400/11/1)',
+        'message': 'When does the class end? ' + (f'(Ex. {jdatetime.datetime.now().strftime("%Y/%m/%d")})' if jalaliCal else f'(Ex. {datetime.now().strftime("%Y-%m-%d")})'),
         'validate': dateV
     },
     {
@@ -90,7 +97,7 @@ answers = prompt(questions, style=custom_style_2)
 
 
 
-formatTime = lambda x:convert(datetime(int(x.split('/')[0]), int(x.split('/')[1]), int(x.split('/')[2].split(' ')[0]), int(x.split(' ')[1].split(':')[0]), int(x.split(' ')[1].split(':')[1]), tzinfo=pytz.utc))
+formatTime = lambda x:convert(datetime(int(x.split('/' if jalaliCal else '-')[0]), int(x.split('/' if jalaliCal else '-')[1]), int(x.split('/' if jalaliCal else '-')[2].split(' ')[0]), int(x.split(' ')[1].split(':')[0]), int(x.split(' ')[1].split(':')[1]), tzinfo=pytz.utc),jalaliCal)
 cal = Calendar()
 event = Event()
 event.add('summary', answers['class_name'])
@@ -104,7 +111,7 @@ if os.path.exists(filename):
     n = 1
     while 1:
         filename = desktop+answers['class_name']+' '+str(n)+'.ics'
-        if not os.path.exists():
+        if not os.path.exists(filename):
             f = open(filename,'wb')
             f.write(cal.to_ical())
             f.close()
