@@ -1,4 +1,5 @@
-# iCal Generator :calendar:
+![Poster](https://repository-images.githubusercontent.com/441833818/e2e4b917-e440-46b1-9bf8-ff7a9290af8b)
+# iCal Generator
 This is a simple python script to generate an [iCalendar](https://en.wikipedia.org/wiki/ICalendar) file for the university classes.
 ## Installation
 1. Clone the repository
