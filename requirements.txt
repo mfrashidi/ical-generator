@@ -1,0 +1,6 @@
+icalendar==4.0.8
+jdatetime==3.6.4
+PyInquirer==1.0.3
+pytz==2019.3
+termcolor==1.1.0
+tweepy==4.4.0
