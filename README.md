@@ -1,4 +1,3 @@
-![Poster](https://i.ibb.co/VYdDLYJ/Banner.jpg)
 # iCal Generator
 This is a simple python script to generate an [iCalendar](https://en.wikipedia.org/wiki/ICalendar) file for the university classes.
 ## Installation
